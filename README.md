@@ -1,14 +1,17 @@
-**Name:** PRIYANKA SHAMKANT CHAUDHARI  
-**Company:** CODE TECH IT SOLUTIONS 
-**ID:** CT04DS7523 
-**Domain:** ARTIFICIAL INTELLIGENCE 
+**Name:** PRIYANKA SHAMKANT CHAUDHARI
+
+**Company:** CODE TECH IT SOLUTIONS
+
+**ID:** CT04DS7523
+
+**Domain:** ARTIFICIAL INTELLIGENCE
+
 **Duration:** AUGUST TO SEPTEMBER 2024 
 
 ##  Overview of Project
 
 ## Project: Data Processing
 ![Screenshot (37)](https://github.com/user-attachments/assets/0af49b86-2cac-4fdc-a6dc-f3d021f8da3b)
-
 
 ### Objective:
 The primary aim of this project is to create a **browser-based data processing pipeline** to clean, transform, and prepare raw datasets for training machine learning models. This project ensures the data is in the right format and quality before applying AI algorithms, focusing on preprocessing tasks like handling missing values, normalizing numerical data, and encoding categorical data.
