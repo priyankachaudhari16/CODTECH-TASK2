@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Processing for AI in Browser</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        #output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Data Processing in Browser</h1>
+
+<input type="file" id="fileInput" accept=".csv">
+<button id="processDataBtn">Process Data</button>
+
+<h2>Processed Data Output:</h2>
+<pre id="output"></pre>
+
+<script>
+    let rawData;
+
+    document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+    document.getElementById('processDataBtn').addEventListener('click', processData);
+
+    // Handle CSV file upload and parse it
+    function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            Papa.parse(file, {
+                header: true, // Parse the CSV with headers
+                dynamicTyping: true, // Automatically detect numeric values
+                complete: function(results) {
+                    rawData = results.data;
+                    document.getElementById('output').innerHTML = "CSV File Loaded! Ready for processing.";
+                }
+            });
+        }
+    }
+
+    // Process the data: cleaning, transforming, and preparing
+    function processData() {
+        if (!rawData) {
+            alert("Please upload a CSV file first!");
+            return;
+        }
+
+        // Step 1: Clean the data (remove rows with missing or null values)
+        let cleanedData = rawData.filter(row => {
+            return Object.values(row).every(value => value !== null && value !== undefined && value !== "");
+        });
+
+        // Step 2: Normalize numerical data
+        let transformedData = cleanedData.map(row => {
+            let transformedRow = {...row}; // Create a copy of the row
+            Object.keys(row).forEach(key => {
+                if (typeof row[key] === 'number') {
+                    // Perform normalization (Min-Max Scaling)
+                    transformedRow[key] = (row[key] - Math.min(...cleanedData.map(r => r[key]))) / 
+                                          (Math.max(...cleanedData.map(r => r[key])) - Math.min(...cleanedData.map(r => r[key])));
+                }
+            });
+            return transformedRow;
+        });
+
+        // Step 3: Encode categorical data (if any)
+        let encodedData = transformedData.map(row => {
+            let encodedRow = {...row}; // Create a copy of the row
+            Object.keys(row).forEach(key => {
+                if (typeof row[key] === 'string') {
+                    // Simple label encoding for categorical data (string to unique int)
+                    let uniqueValues = Array.from(new Set(cleanedData.map(r => r[key])));
+                    encodedRow[key] = uniqueValues.indexOf(row[key]);
+                }
+            });
+            return encodedRow;
+        });
+
+        // Output processed data
+        document.getElementById('output').innerHTML = JSON.stringify(encodedData, null, 2);
+    }
+
+</script>
+
+</body>
+</html>
